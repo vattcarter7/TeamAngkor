@@ -21,6 +21,7 @@ if (process.env.NODE_ENV === 'production') {
 } else {
   dbConfig = {
     user: 'postgres',
+    password: '111',
     host: 'localhost',
     database: 'teamangkor',
     port: 5432

@@ -1,10 +1,10 @@
 -- ** DATABASE SCHEMA AND TABLE 
 
 -- CREATE TABLE users
-CREATE TABLE users (
+CREATE OR REPLACE TABLE users (
   id                        SERIAL PRIMARY KEY,
   email                     TEXT UNIQUE NOT NULL check (email ~* '^.+@.+\..+$'),
-  password                  VARCHAR(128),
+  password                  VARCHAR(128) NOT NULL,
   firstname                 VARCHAR(100) NOT NULL,
   lastname                  VARCHAR(100) NOT NULL,
   gender                    VARCHAR(10) NOT NULL,

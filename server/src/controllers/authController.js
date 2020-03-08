@@ -44,11 +44,19 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @route     POST /api/v1/auth/register
 // @access    Public
 exports.register = async (req, res, next) => {
-  if (!req.body.name || !req.body.email || !req.body.password) {
+  if (
+    !req.body.firstname ||
+    !req.body.lastname ||
+    !req.body.gender ||
+    !req.body.email ||
+    !req.body.password
+  ) {
     return next(new ErrorResponse('Some values are missing', 400));
   }
-  if (!isValidName(req.body.name.trim()))
-    return next(new ErrorResponse('Please enter a valid name', 400));
+  if (!isValidName(req.body.firstname.trim()))
+    return next(new ErrorResponse('Please enter a valid firstname', 400));
+  if (!isValidName(req.body.lastname.trim()))
+    return next(new ErrorResponse('Please enter a valid lastname', 400));
   if (!isValidEmail(req.body.email.trim()))
     return next(new ErrorResponse('Please enter a valid email address', 400));
 
@@ -59,18 +67,27 @@ exports.register = async (req, res, next) => {
   const hashedPassword = hashPassword(req.body.password);
 
   const createQuery = `INSERT INTO
-      hb.user(name, email, password, created_at, modified_date, tokens)
-      VALUES($1, $2, $3, to_timestamp($4), to_timestamp($5), to_tsvector($6))
+      users(firstname,lastname, email, password, gender, created_at, tokens)
+      VALUES($1, $2, $3, $4, $5, to_timestamp($6), to_tsvector($7))
       ON CONFLICT (email) DO NOTHING
       returning *`;
   const values = [
-    req.body.name.trim().toLowerCase(),
+    req.body.firstname.trim().toLowerCase(),
+    req.body.lastname.trim().toLowerCase(),
     req.body.email.trim().toLowerCase(),
     hashedPassword,
+    req.body.gender,
     covertJavascriptToPosgresTimestamp(Date.now()),
-    covertJavascriptToPosgresTimestamp(Date.now()),
-    req.body.name.trim().toLowerCase() //
+    req.body.firstname.trim().toLowerCase() +
+      ' ' +
+      req.body.lastname.trim().toLowerCase()
   ];
+
+  console.log(
+    req.body.firstname.trim().toLowerCase() +
+      ' ' +
+      req.body.lastname.trim().toLowerCase()
+  );
 
   const { rows } = await db.query(createQuery, values);
   if (!rows[0]) {
@@ -92,7 +109,7 @@ exports.login = asyncHandler(async (req, res, next) => {
   if (!isValidEmail(req.body.email.trim())) {
     return next(new ErrorResponse('Please provide a valid email address', 400));
   }
-  const text = 'SELECT * FROM hb.user WHERE email = $1';
+  const text = 'SELECT * FROM users WHERE email = $1';
   const { rows } = await db.query(text, [req.body.email.trim().toLowerCase()]);
   if (!rows[0]) {
     return next(
@@ -129,7 +146,7 @@ exports.logout = asyncHandler(async (req, res, next) => {
 // @route     GET /api/v1/auth/me
 // @access    Private
 exports.getMe = asyncHandler(async (req, res, next) => {
-  const text = 'SELECT * FROM hb.user WHERE id = $1';
+  const text = 'SELECT * FROM users WHERE id = $1';
   const { rows } = await db.query(text, [req.user.id]);
   if (!rows[0]) return next(new ErrorResponse('No user found', 401));
   const user = rows[0];
@@ -147,25 +164,33 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
   const id = req.user.id;
-  const name = req.body.name ? req.body.name : req.user.name;
+  const firstname = req.body.firstname ? req.body.firstname : req.user.firstname;
+  const lastname = req.body.lastname ? req.body.lastname : req.user.lastname;
+  const gender = req.body.gender ? req.body.gender : req.user.gender;
   const email = req.body.email ? req.body.email : req.user.email;
 
-  if (!isValidName(name.trim()))
-    return next(new ErrorResponse('Invalid name', 403));
+  if (!isValidName(firstname.trim()))
+    return next(new ErrorResponse('Invalid firstname', 403));
+    if (!isValidName(lastname.trim()))
+    return next(new ErrorResponse('Invalid lastname', 403));
   if (!isValidEmail(email.trim()))
     return next(new ErrorResponse('Invalid email', 403));
 
-  const updateQuery = `UPDATE hb.user 
-                       SET name = $1, 
-                       email = $2,
-                       tokens = to_tsvector($3) 
-                       WHERE id = $4 
+  const updateQuery = `UPDATE users 
+                       SET firstname = $1,
+                       lastname = $2,
+                       gender = $3, 
+                       email = $4,
+                       tokens = to_tsvector($5) 
+                       WHERE id = $6 
                        returning *`;
 
   const { rows } = await db.query(updateQuery, [
-    name.trim(),
+    firstname.trim(),
+    lastname.trim(),
+    gender,
     email.trim(),
-    name.trim(),
+    firstname + ' ' + lastname,
     id
   ]);
 
@@ -179,7 +204,7 @@ exports.updateDetails = asyncHandler(async (req, res, next) => {
 // @route     PUT /api/v1/auth/updatedetails
 // @access    Private
 exports.updatePassword = asyncHandler(async (req, res, next) => {
-  const textQuery = `SELECT * FROM hb.user WHERE id = $1`;
+  const textQuery = `SELECT * FROM users WHERE id = $1`;
   const { rows } = await db.query(textQuery, [req.user.id]);
   if (!rows[0]) {
     return next(new ErrorResponse('Error updating password', 400));
@@ -194,7 +219,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 
   const newHashedPassword = hashPassword(req.body.newPassword);
 
-  const updateQuery = `UPDATE hb.user
+  const updateQuery = `UPDATE users
                        SET password = $1 
                        WHERE id = $2 
                        returning *`;
@@ -216,7 +241,7 @@ exports.updatePassword = asyncHandler(async (req, res, next) => {
 // @access    Public
 exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // get user based on POSTed email
-  const textQuery = `SELECT * FROM hb.user WHERE email = $1`;
+  const textQuery = `SELECT * FROM users WHERE email = $1`;
   if (
     req.body.email.trim().length < 1 ||
     !isValidEmail(req.body.email.trim())
@@ -248,7 +273,7 @@ exports.forgotPassword = asyncHandler(async (req, res, next) => {
   // set password reset expires in 10 minutes - javascript time
   const passwordResetExpires = Date.now() + 10 * 60 * 1000; // expires in 10 minutes
 
-  let updateQuery = `UPDATE hb.user
+  let updateQuery = `UPDATE users
                      SET password_reset_token = $1, 
                      password_reset_expires = to_timestamp($2) 
                      WHERE email = $3 
@@ -299,7 +324,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
     .digest('hex');
 
   // find user with a valid token
-  const textQuery = `SELECT * FROM hb.user
+  const textQuery = `SELECT * FROM users
                      WHERE password_reset_token = $1
                      AND password_reset_expires > to_timestamp($2)`;
   const { rows } = await db.query(textQuery, [
@@ -325,7 +350,7 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
 
   // save the new password and set the password_reset_token
   // and set password_reset_expires to undefined
-  const updateQuery = `UPDATE hb.user
+  const updateQuery = `UPDATE users
                        SET password = $1, 
                        password_reset_token = $2, 
                        password_reset_expires = $3 
