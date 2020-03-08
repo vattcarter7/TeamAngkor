@@ -6,13 +6,7 @@
   "scripts": {
     "start": "node server.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon server.js",
-    "initdb": "npm run createdb && npm run createschema && npm run loaddata",
-    "createdb": "cross-env psql -f ./database/create_db.sql postgres://localhost:5432/postgres",
-    "createschema": "cross-env psql -f ./database/schema.sql postgres://localhost:5432/hackerbook",
-    "loaddata": "cross-env psql -f ./database/load_data.sql postgres://localhost:5432/hackerbook",
-    "dropdb": "cross-env psql -f ./database/drop_db.sql postgres://localhost:5432/postgres",
-    "dropschema": "cross-env psql -f ./database/drop_schema.sql postgres://localhost:5432/hackerbook"
+    "dev": "nodemon server.js"
   },
   "engines": {
     "node": ">=12.0.0"
