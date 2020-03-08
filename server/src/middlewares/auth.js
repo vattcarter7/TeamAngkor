@@ -35,8 +35,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
     // GRAND ACCESS TO PROTECTED ROUTE
     req.user = {
       id: decoded.userId,
-      fistname: rows[0].firstname,
+      firstname: rows[0].firstname,
       lastname: rows[0].lastname,
+      gender: rows[0].gender,
       email: rows[0].email,
       user_role: rows[0].user_role
     };
