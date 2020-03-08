@@ -17,6 +17,8 @@ CREATE TABLE users(
   password_reset_expires    TIMESTAMPTZ
 );
 
+CREATE INDEX users_tokens_idx ON users USING gin(tokens);
+
 -- CREATE TABLE tours
 CREATE TABLE tours(
   id                            SERIAL PRIMARY KEY,
@@ -27,6 +29,7 @@ CREATE TABLE tours(
   includes                      VARCHAR(255)[],
   not_includes                  VARCHAR(255)[],
   tokens                        tsvector,
+  modified_date                 TIMESTAMPTZ,
   created_at                    TIMESTAMPTZ DEFAULT now(),
   published                     BOOLEAN DEFAULT false,
   active                        BOOLEAN DEFAULT true,
@@ -49,18 +52,10 @@ CREATE TABLE tours(
   private_17pax_price           REAL NOT NULL,
   private_18pax_price           REAL NOT NULL,
   private_19pax_price           REAL NOT NULL,
-  private_20pax_price           REAL NOT NULL,
-  private_21pax_price           REAL NOT NULL,
-  private_22pax_price           REAL NOT NULL,
-  private_23pax_price           REAL NOT NULL,
-  private_24pax_price           REAL NOT NULL,
-  private_25pax_price           REAL NOT NULL,
-  private_26pax_price           REAL NOT NULL,
-  private_27pax_price           REAL NOT NULL,
-  private_28pax_price           REAL NOT NULL,
-  private_29pax_price           REAL NOT NULL,
   join_tour_price               REAL NOT NULL
 );
+
+CREATE INDEX tours_tokens_idx ON tours USING gin(tokens);
 
 -- CREATE TABLE languages
 CREATE TABLE languages(
@@ -74,7 +69,7 @@ CREATE TABLE guides(
   nickname          VARCHAR(100),
   language_id       INT[] REFERENCES languages(id) NOT NULL,
   profile_picture   TEXT NOT NULL,
-  date_of_birth      TIMESTAMPTZ,
+  date_of_birth     TIMESTAMPTZ NOT NULL,
   about_me          TEXT NOT NULL,
   phone             VARCHAR(100)[],
   email             VARCHAR(100)[],
@@ -83,9 +78,13 @@ CREATE TABLE guides(
   rating_total      INT default 0,
   rating_count      INT default 0,
   rating            DECIMAL default 0,
+  tokens            tsvector,
   created_at        TIMESTAMPTZ DEFAULT now(),
+  modified_date     TIMESTAMPTZ,
   active            BOOLEAN DEFAULT true
 );
+
+CREATE INDEX guides_tokens_idx ON tours USING gin(tokens);
 
 -- CREATE TABLE reviews
 CREATE TABLE reviews(
@@ -101,6 +100,11 @@ CREATE TABLE reviews(
   created_at        TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE INDEX reviews_customer_id_idx ON reviews(customer_id);
+CREATE INDEX reviews_tour_id_idx ON reviews(tour_id);
+CREATE INDEX reviews_guide_id-idx ON reviews(guide_id);
+CREATE INDEX reviews_tokens_idx ON reviews USING gin(tokens);
+
 -- CREATE TABLE customers
 CREATE TABLE customers(
   id                INT UNIQUE PRIMARY KEY NOT NULL,  -- id DERIVED FROM users id
@@ -109,9 +113,12 @@ CREATE TABLE customers(
   email             VARCHAR(100)[] NOT NULL, 
   language_id       INT REFERENCES languages(id) NOT NULL,
   profile_picture   TEXT,
+  tokens            tsvector,
   created_at        TIMESTAMPTZ DEFAULT now(),
   active            BOOLEAN DEFAULT true
 );
+
+CREATE INDEX customer_tokens_idx ON customers USING gin(tokens);
 
 -- CREATE TABLE purchases
 CREATE TABLE purchases(
@@ -128,6 +135,10 @@ CREATE TABLE purchases(
   purchase_date     TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE INDEX purchases_customer_id_idx ON purchases(customer_id);
+CREATE INDEX purchases_tour_id_idx ON purchases(tour_id);
+CREATE INDEX purchases_guide_id_idx ON purchases(guide_id);
+
 -- CREATE TABLE guide_request
 CREATE TABLE guide_requests(
   id                    SERIAL PRIMARY KEY,
@@ -141,6 +152,10 @@ CREATE TABLE guide_requests(
   created_at            TIMESTAMPTZ DEFAULT now()
 );
 
+CREATE INDEX guide_requests_tour_id_idx ON guide_requests(tour_id);
+CREATE INDEX guide_requests_customer_id_idx ON guide_requests(customer_id);
+CREATE INDEX guide_requests_guide_id_idx ON guide_requests(guide_id);
+
 -- CREATE TABLE guide_request_details
 CREATE TABLE guide_request_details(
   id                    SERIAL PRIMARY KEY,
@@ -150,3 +165,6 @@ CREATE TABLE guide_request_details(
   available             BOOLEAN NOT NULL,
   created_at            TIMESTAMPTZ DEFAULT now()
 );
+
+CREATE INDEX guide-request_details_guide_request_id_idx ON guide_request_details(guide_request_id);
+CREATE INDEX guide-request_details_guide_id_idx ON guide_request_details(guide_id);
