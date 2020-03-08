@@ -1,7 +1,7 @@
--- ** DATABASE SCHEMA AND TABLE 
+-- ** DATABASE SCHEMAS AND TABLES
 
 -- CREATE TABLE users
-CREATE OR REPLACE TABLE users (
+CREATE TABLE users (
   id                        SERIAL PRIMARY KEY,
   email                     TEXT UNIQUE NOT NULL check (email ~* '^.+@.+\..+$'),
   password                  VARCHAR(128) NOT NULL,
@@ -11,7 +11,7 @@ CREATE OR REPLACE TABLE users (
   user_role                 VARCHAR(50) DEFAULT 'user',
   tokens                    tsvector,
   created_at                timestamptz DEFAULT now(),
-  modified_date             timestamptz DEFAULT now(),
+  modified_date             timestamptz,
   active                    BOOLEAN DEFAULT true,
   password_reset_token      VARCHAR(200),
   password_reset_expires    timestamptz
@@ -62,6 +62,8 @@ CREATE TABLE purchases (
   guide_id          INT NOT NULL REFERENCES guides(id),
   price             INT NOT NULL,
   discount          INT DEFAULT 0,
-  refund            BOOLEAN DEFAULT false
+  refund            BOOLEAN DEFAULT false,
+  tourdate          timestamptz NOT NULL,
+  created_at        timestamptz DEFAULT now()
 );
 
