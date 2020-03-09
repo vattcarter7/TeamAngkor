@@ -126,7 +126,7 @@ CREATE TABLE purchases(
   customer_id       INT NOT NULL REFERENCES customers(id),
   tour_id           INT NOT NULL REFERENCES tours(id),
   guide_id          INT NOT NULL REFERENCES guides(id),
-  tour_type         VARCHAR(10), -- join_tour, private_1pax_price, private_2pax_price, private_3pax_price ...
+  tour_type         VARCHAR(100), -- join_tour, private_1pax_price, private_2pax_price, private_3pax_price ...
   unit_price        REAL NOT NULL,
   pax               INT NOT NULL,
   discount          INT DEFAULT 0,
