@@ -16,6 +16,7 @@ const app = express();
 // Route files
 const auth = require('./src/routes/authRoute');
 const users = require('./src/routes/userRoute');
+const tours = require('./src/routes/tourRoute');
 
 // Body parser
 app.use(express.json());
@@ -41,7 +42,8 @@ app.get('/', (req, res) => {
 
 // Mount routers
 app.use('/api/v1/auth', auth);
-app.use('/api/v1/user', users);
+app.use('/api/v1/users', users);
+app.use('/api/v1/tours', tours);
 
 app.use(errorHandler);
 

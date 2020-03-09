@@ -43,7 +43,7 @@ const sendTokenResponse = (user, statusCode, res) => {
 // @desc      Register user
 // @route     POST /api/v1/auth/register
 // @access    Public
-exports.register = async (req, res, next) => {
+exports.register = asyncHandler(async (req, res, next) => {
   if (
     !req.body.firstname ||
     !req.body.lastname ||
@@ -97,7 +97,7 @@ exports.register = async (req, res, next) => {
   const user = rows[0];
 
   sendTokenResponse(user, 201, res);
-};
+});
 
 // @desc      Login user
 // @route     POST /api/v1/auth/login
@@ -164,14 +164,16 @@ exports.getMe = asyncHandler(async (req, res, next) => {
 // @access    Private
 exports.updateDetails = asyncHandler(async (req, res, next) => {
   const id = req.user.id;
-  const firstname = req.body.firstname ? req.body.firstname : req.user.firstname;
+  const firstname = req.body.firstname
+    ? req.body.firstname
+    : req.user.firstname;
   const lastname = req.body.lastname ? req.body.lastname : req.user.lastname;
   const gender = req.body.gender ? req.body.gender : req.user.gender;
   const email = req.body.email ? req.body.email : req.user.email;
 
   if (!isValidName(firstname.trim()))
     return next(new ErrorResponse('Invalid firstname', 403));
-    if (!isValidName(lastname.trim()))
+  if (!isValidName(lastname.trim()))
     return next(new ErrorResponse('Invalid lastname', 403));
   if (!isValidEmail(email.trim()))
     return next(new ErrorResponse('Invalid email', 403));
