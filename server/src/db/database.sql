@@ -22,35 +22,37 @@ CREATE INDEX users_tokens_idx ON users USING gin(tokens);
 -- CREATE TABLE tours
 CREATE TABLE tours(
   id                            SERIAL PRIMARY KEY,
-  name                          VARCHAR(200),
+  name                          VARCHAR(200) UNIQUE NOT NULL,
   description                   TEXT,
-  images                        TEXT NOT NULL,
-  includes                      VARCHAR(255),
+  images                        TEXT[] NOT NULL,
+  videos                        TEXT[],
+  includes                      VARCHAR(255)[],
+  not_includes                  VARCHAR(255)[],
   tokens                        tsvector,
   modified_date                 TIMESTAMPTZ,
   created_at                    TIMESTAMPTZ DEFAULT now(),
   published                     BOOLEAN DEFAULT false,
   active                        BOOLEAN DEFAULT true,
-  private_1pax_price            REAL NOT NULL,
-  private_2pax_price            REAL NOT NULL,
-  private_3pax_price            REAL NOT NULL,
-  private_4pax_price            REAL NOT NULL,
-  private_5pax_price            REAL NOT NULL,
-  private_6pax_price            REAL NOT NULL,
-  private_7pax_price            REAL NOT NULL,
-  private_8pax_price            REAL NOT NULL,
-  private_9pax_price            REAL NOT NULL,
-  private_10pax_price           REAL NOT NULL,
-  private_11pax_price           REAL NOT NULL,
-  private_12pax_price           REAL NOT NULL,
-  private_13pax_price           REAL NOT NULL,
-  private_14pax_price           REAL NOT NULL,
-  private_15pax_price           REAL NOT NULL,
-  private_16pax_price           REAL NOT NULL,
-  private_17pax_price           REAL NOT NULL,
-  private_18pax_price           REAL NOT NULL,
-  private_19pax_price           REAL NOT NULL,
-  join_tour_price               REAL NOT NULL
+  private_1pax_unit_price           REAL NOT NULL,
+  private_2pax_unit_price           REAL NOT NULL,
+  private_3pax_unit_price           REAL NOT NULL,
+  private_4pax_unit_price           REAL NOT NULL,
+  private_5pax_unit_price           REAL NOT NULL,
+  private_6pax_unit_price           REAL NOT NULL,
+  private_7pax_unit_price           REAL NOT NULL,
+  private_8pax_unit_price           REAL NOT NULL,
+  private_9pax_unit_price           REAL NOT NULL,
+  private_10pax_unit_price          REAL NOT NULL,
+  private_11pax_unit_price          REAL NOT NULL,
+  private_12pax_unit_price          REAL NOT NULL,
+  private_13pax_unit_price          REAL NOT NULL,
+  private_14pax_unit_price          REAL NOT NULL,
+  private_15pax_unit_price          REAL NOT NULL,
+  private_16pax_unit_price          REAL NOT NULL,
+  private_17pax_unit_price          REAL NOT NULL,
+  private_18pax_unit_price          REAL NOT NULL,
+  private_19pax_unit_price          REAL NOT NULL,
+  join_tour_unit_price              REAL NOT NULL
 );
 
 CREATE INDEX tours_tokens_idx ON tours USING gin(tokens);
@@ -66,22 +68,6 @@ CREATE TABLE photos(
   id                SERIAL PRIMARY KEY,
   photo_url         TEXT NOT NULL
 );
-
--- CREATE TABLE includes
-CREATE TABLE includes(
-  id                SERIAL PRIMARY KEY,
-  name              VARCHAR(100) UNIQUE NOT NULL
-);
-
--- CREATE TABLE tour_includes
-CREATE TABLE tour_includes(
-  id                SERIAL PRIMARY KEY,
-  tour_id           INT REFERENCES tours(id),
-  includes_id       INT REFERENCES includes(id)
-);
-
-CREATE INDEX tour_includes_tour_id_idx ON tour_includes(tour_id);
-CREATE INDEX tour_includes_includes_id_idx ON tour_includes(includes_id);
 
 -- CREATE TABLE guides
 CREATE TABLE guides(

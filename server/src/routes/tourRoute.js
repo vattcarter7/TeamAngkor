@@ -2,13 +2,25 @@ const express = require('express');
 
 const router = express.Router();
 
-const { createUser, getTours } = require('../controllers/tourController');
+const {
+  getTour,
+  createTour,
+  getTours,
+  updateTour,
+  deleteTour
+} = require('../controllers/tourController');
 
 const { protect } = require('../middlewares/auth');
 
 router
   .route('/')
   .get(getTours)
-  .post(createUser);
+  .post(createTour);
+
+router
+  .route('/:id')
+  .get(getTour)
+  .put(updateTour)
+  .delete(deleteTour);
 
 module.exports = router;
