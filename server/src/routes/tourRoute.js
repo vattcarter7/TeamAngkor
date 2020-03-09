@@ -4,8 +4,8 @@ const router = express.Router();
 
 const {
   getTour,
-  createTour,
   getTours,
+  createTour,
   updateTour,
   deleteTour
 } = require('../controllers/tourController');
