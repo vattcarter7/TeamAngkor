@@ -24,10 +24,8 @@ CREATE TABLE tours(
   id                            SERIAL PRIMARY KEY,
   name                          VARCHAR(200),
   description                   TEXT,
-  images                        TEXT[] NOT NULL,
-  videos                        TEXT[],
-  includes                      VARCHAR(255)[],
-  not_includes                  VARCHAR(255)[],
+  images                        TEXT NOT NULL,
+  includes                      VARCHAR(255),
   tokens                        tsvector,
   modified_date                 TIMESTAMPTZ,
   created_at                    TIMESTAMPTZ DEFAULT now(),
@@ -63,6 +61,28 @@ CREATE TABLE languages(
   name              VARCHAR(100) UNIQUE NOT NULL
 );
 
+-- CREATE TABLE photos
+CREATE TABLE photos(
+  id                SERIAL PRIMARY KEY,
+  photo_url         TEXT NOT NULL
+);
+
+-- CREATE TABLE includes
+CREATE TABLE includes(
+  id                SERIAL PRIMARY KEY,
+  name              VARCHAR(100) UNIQUE NOT NULL
+);
+
+-- CREATE TABLE tour_includes
+CREATE TABLE tour_includes(
+  id                SERIAL PRIMARY KEY,
+  tour_id           INT REFERENCES tours(id),
+  includes_id       INT REFERENCES includes(id)
+);
+
+CREATE INDEX tour_includes_tour_id_idx ON tour_includes(tour_id);
+CREATE INDEX tour_includes_includes_id_idx ON tour_includes(includes_id);
+
 -- CREATE TABLE guides
 CREATE TABLE guides(
   id                INT UNIQUE PRIMARY KEY NOT NULL, -- id DERIVED FROM users id
@@ -71,10 +91,8 @@ CREATE TABLE guides(
   profile_picture   TEXT NOT NULL,
   date_of_birth     TIMESTAMPTZ NOT NULL,
   about_me          TEXT NOT NULL,
-  phone             VARCHAR(100)[],
-  email             VARCHAR(100)[],
-  photos            TEXT[],
-  videos            TEXT[],
+  phone             VARCHAR(100),
+  email             VARCHAR(100),
   rating_total      INT default 0,
   rating_count      INT default 0,
   rating            DECIMAL default 0,
@@ -86,12 +104,22 @@ CREATE TABLE guides(
 
 CREATE INDEX guides_tokens_idx ON guides USING gin(tokens);
 
+-- CREATE TABLE guide_photos
+CREATE TABLE guide_photos(
+  id                SERIAL PRIMARY KEY,
+  guide_id          INT REFERENCES guides(id),
+  photo_id          INT REFERENCES photos(id)            
+);
+
+CREATE INDEX guide_photos_guide_id_idx ON guide_photos(guide_id);
+CREATE INDEX guide_photos_photo_id_idx ON guide_photos(photo_id);
+
 -- CREATE TABLE customers
 CREATE TABLE customers(
   id                INT UNIQUE PRIMARY KEY NOT NULL,  -- id DERIVED FROM users id
   country           VARCHAR(100) NOT NULL,
-  phone             VARCHAR(100)[] NOT NULL,
-  email             VARCHAR(100)[] NOT NULL, 
+  phone             VARCHAR(100) NOT NULL,
+  email             VARCHAR(100) NOT NULL, 
   language_id       INT REFERENCES languages(id) NOT NULL,
   profile_picture   TEXT,
   tokens            tsvector,

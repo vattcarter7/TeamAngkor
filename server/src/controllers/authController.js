@@ -83,12 +83,6 @@ exports.register = asyncHandler(async (req, res, next) => {
       req.body.lastname.trim().toLowerCase()
   ];
 
-  console.log(
-    req.body.firstname.trim().toLowerCase() +
-      ' ' +
-      req.body.lastname.trim().toLowerCase()
-  );
-
   const { rows } = await db.query(createQuery, values);
   if (!rows[0]) {
     return next(new ErrorResponse('Cannot register with this email', 400));
