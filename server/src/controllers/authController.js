@@ -66,12 +66,21 @@ exports.register = asyncHandler(async (req, res, next) => {
     );
   const hashedPassword = hashPassword(req.body.password);
 
+  const textQuery = `SELECT * FROM users WHERE email = $1`;
+  const value = [req.body.email.toLowerCase().trim()];
+
+  const response = await db.query(textQuery, value);
+
+  if (response.rows[0]) {
+    return next(
+      new ErrorResponse(`Unable to register.`, 403)
+    );
+  }
+
   const createQuery = `INSERT INTO
       users(firstname,lastname, email, password, gender, created_at, tokens)
-      VALUES($1, $2, $3, $4, $5, to_timestamp($6), to_tsvector($7))
-      ON CONFLICT (email) DO NOTHING
-      returning *`;
-  const values = [
+      VALUES($1, $2, $3, $4, $5, to_timestamp($6), to_tsvector($7)) returning *`;
+  const params = [
     req.body.firstname.trim().toLowerCase(),
     req.body.lastname.trim().toLowerCase(),
     req.body.email.trim().toLowerCase(),
@@ -83,7 +92,7 @@ exports.register = asyncHandler(async (req, res, next) => {
       req.body.lastname.trim().toLowerCase()
   ];
 
-  const { rows } = await db.query(createQuery, values);
+  const { rows } = await db.query(createQuery, params);
   if (!rows[0]) {
     return next(new ErrorResponse('Cannot register with this email', 400));
   }

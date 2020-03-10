@@ -183,3 +183,4 @@ CREATE TABLE guide_request_details(
 
 CREATE INDEX guide_request_details_guide_request_id_idx ON guide_request_details(guide_request_id);
 CREATE INDEX guide_request_details_guide_id_idx ON guide_request_details(guide_id);
+
