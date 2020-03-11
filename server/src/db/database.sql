@@ -75,7 +75,6 @@ CREATE TABLE guides(
   nickname          VARCHAR(100),
   language_id       INT REFERENCES languages(id) NOT NULL,
   profile_picture   TEXT NOT NULL,
-  date_of_birth     TIMESTAMPTZ NOT NULL,
   about_me          TEXT NOT NULL,
   phone             VARCHAR(100),
   email             VARCHAR(100),

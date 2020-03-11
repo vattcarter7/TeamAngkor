@@ -158,7 +158,7 @@ exports.updateTour = asyncHandler(async (req, res, next) => {
           active = $9,
           published = $10,
           join_tour_unit_price = $11,  
-          private_1pax_unit_price =   $12,
+          private_1pax_unit_price = $12,
           private_2pax_unit_price = $13,
           private_3pax_unit_price = $14,
           private_4pax_unit_price = $15,
