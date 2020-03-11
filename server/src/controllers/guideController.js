@@ -137,13 +137,32 @@ exports.deleteGuide = asyncHandler(async (req, res, next) => {
   if (!response.rows[0])
     return next(new ErrorResponse('No such guide to delete', 404));
 
-  // delete guide with the ID
-  const deleteQuery = `DELETE FROM guides WHERE id = $1`;
-  const deleteParam = [response.rows[0].id];
+  try {
+    // Begin transaction
+    await db.query('BEGIN');
+    // change the user_role from guide back to user
+    const updateQuery = `UPDATE users SET user_role = $1 WHERE id = $2`;
+    const value = ['user', response.rows[0].id];
+    await db.query(updateQuery, value);
 
-  await db.query(deleteQuery, deleteParam);
-  res.status(200).json({
-    success: true,
-    msg: 'guide deleted'
-  })
+    // delete guide with the ID
+    const deleteQuery = `DELETE FROM guides WHERE id = $1`;
+    const deleteParam = [response.rows[0].id];
+
+    await db.query(deleteQuery, deleteParam);
+
+    // End transaction
+    await db.query('COMMIT');
+    res.status(200).json({
+      success: true,
+      msg: 'guide deleted'
+    });
+  } catch (err) {
+    // if not success rollback to normal
+    await db.query('ROLLBACK');
+    res.status(400).json({
+      success: false,
+      errMsg: 'Unable to delete guide guide'
+    });
+  }
 });

@@ -91,7 +91,7 @@ exports.createTour = asyncHandler(async (req, res, next) => {
     req.body.videos,
     req.body.includes,
     req.body.not_includes,
-    req.body.name,
+    req.body.name + ' ' + req.body.description,
     req.body.private_1pax_unit_price,
     req.body.private_2pax_unit_price,
     req.body.private_3pax_unit_price,
@@ -253,12 +253,12 @@ exports.deleteTour = asyncHandler(async (req, res, next) => {
   const response = await db.query(textQuery, value);
   if (!response.rows[0])
     return next(new ErrorResponse('No such tour to delete', 404));
-  const deleteQuery =  `DELETE FROM tours WHERE id = $1`;
+  const deleteQuery = `DELETE FROM tours WHERE id = $1`;
   const deleteParam = [req.params.id];
 
   await db.query(deleteQuery, deleteParam);
   res.status(200).json({
     success: true,
     msg: 'Tour deleted'
-  })
+  });
 });
