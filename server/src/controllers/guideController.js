@@ -1,6 +1,7 @@
 const db = require('../db');
 const ErrorResponse = require('../helpers/errorResponse');
 const asyncHandler = require('../middlewares/async');
+const { covertJavascriptToPosgresTimestamp } = require('../helpers/timeUtil');
 
 // @desc      Get all guides
 // @route     GET /api/v1/guides
@@ -87,4 +88,62 @@ exports.createGuide = asyncHandler(async (req, res, next) => {
       errMsg: 'Unable to create guide'
     });
   }
+});
+
+exports.updateGuide = asyncHandler(async (req, res, next) => {
+  const textQuery = `SELECT * FROM guides WHERE id = $1`;
+  const value = [req.params.id];
+  const response = await db.query(textQuery, value);
+  if (!response.rows[0])
+    return next(new ErrorResponse('No such guide to update', 404));
+
+  const updateQuery = `UPDATE guides SET
+                          nickname                =$1, 
+                          language_id             =$2,
+                          profile_picture         =$3,
+                          about_me                =$4, 
+                          phone                   =$5,
+                          email                   =$6,
+                          modified_date           =to_timestamp($7)
+                        WHERE id = $8 returning *
+                      `;
+  const updateValues = [
+    req.body.nickname || response.rows[0].nickname,
+    req.body.language_id || response.rows[0].language_id,
+    req.body.profile_picture || response.rows[0].profile_picture,
+    req.body.about_me || response.rows[0].about_me,
+    req.body.phone || response.rows[0].phone,
+    req.body.email || response.rows[0].email,
+    covertJavascriptToPosgresTimestamp(Date.now()),
+    req.params.id
+  ];
+
+  const { rows } = await db.query(updateQuery, updateValues);
+  if (!rows[0]) {
+    return next(new ErrorResponse('Unable to update guide', 400));
+  }
+  const guide = rows[0];
+  res.status(200).json({
+    success: true,
+    msg: 'guide updated successfully!',
+    guide
+  });
+});
+
+exports.deleteGuide = asyncHandler(async (req, res, next) => {
+  const textQuery = `SELECT * FROM guides WHERE id = $1`;
+  const value = [req.params.id];
+  const response = await db.query(textQuery, value);
+  if (!response.rows[0])
+    return next(new ErrorResponse('No such guide to delete', 404));
+
+  // delete guide with the ID
+  const deleteQuery = `DELETE FROM guides WHERE id = $1`;
+  const deleteParam = [response.rows[0].id];
+
+  await db.query(deleteQuery, deleteParam);
+  res.status(200).json({
+    success: true,
+    msg: 'guide deleted'
+  })
 });
