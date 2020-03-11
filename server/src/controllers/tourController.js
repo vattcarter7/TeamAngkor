@@ -143,8 +143,7 @@ exports.updateTour = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse('Unable to update tour', 400));
   }
 
-  let tokens;
-  req.body.name ? (tokens = `to_tsvector($7)`) : (tokens = `$7`);
+  const tokens = req.body.name ? `to_tsvector($7)` : `$7`;
 
   const updateQuery = `UPDATE tours 
         SET 
