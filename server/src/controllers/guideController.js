@@ -162,7 +162,7 @@ exports.deleteGuide = asyncHandler(async (req, res, next) => {
     await db.query('ROLLBACK');
     res.status(400).json({
       success: false,
-      errMsg: 'Unable to delete guide guide'
+      errMsg: 'Unable to delete guide'
     });
   }
 });
