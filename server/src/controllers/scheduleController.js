@@ -52,6 +52,9 @@ exports.deleteBusyDate = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc      Get all busy schedule by a single guide
+// @route     GET /api/v1/schedules/guides/:id
+// @access    Private/Admin
 exports.getBusySchedulesByGuide = asyncHandler(async (req, res, next) => {
   const textQuery = `SELECT * FROM busy_schedules WHERE guide_id = $1 ORDER BY busy_date`;
   const value = [req.params.id];
