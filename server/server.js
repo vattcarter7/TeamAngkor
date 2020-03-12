@@ -18,6 +18,7 @@ const auth = require('./src/routes/authRoute');
 const users = require('./src/routes/userRoute');
 const tours = require('./src/routes/tourRoute');
 const guides = require('./src/routes/guideRoute');
+const schedules = require('./src/routes/scheduleRoute')
 
 // Body parser
 app.use(express.json());
@@ -46,6 +47,7 @@ app.use('/api/v1/auth', auth);
 app.use('/api/v1/users', users);
 app.use('/api/v1/tours', tours);
 app.use('/api/v1/guides', guides);
+app.use('/api/v1/schedules', schedules);
 
 app.use(errorHandler);
 

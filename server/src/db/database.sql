@@ -188,9 +188,11 @@ CREATE INDEX guide_request_details_guide_id_idx ON guide_request_details(guide_i
 -- CREATE TABLE busy_schedules
 CREATE TABLE busy_schedules(
   guide_id              INT REFERENCES guides(id) NOT NULL,
-  busy_date             DATE NOT NULL,
+  busy_date             DATE NOT NULL check(busy_date >= now()),
   created_at            TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE busy_schedules ADD CONSTRAINT guide_busy_date UNIQUE (guide_id, busy_date);
 
 CREATE INDEX busy_schedules_guide_id_idx ON busy_schedules(guide_id);
 
