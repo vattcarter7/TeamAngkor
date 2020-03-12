@@ -10,11 +10,11 @@ CREATE TABLE users(
   gender                    VARCHAR(10) NOT NULL,
   user_role                 VARCHAR(50) DEFAULT 'user',
   tokens                    tsvector,
-  created_at                TIMESTAMPTZ DEFAULT now(),
   modified_date             TIMESTAMPTZ,
   active                    BOOLEAN DEFAULT true,
   password_reset_token      VARCHAR(200),
-  password_reset_expires    TIMESTAMPTZ
+  password_reset_expires    TIMESTAMPTZ,
+  created_at                TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX users_tokens_idx ON users USING gin(tokens);
@@ -24,6 +24,8 @@ CREATE TABLE tours(
   id                            SERIAL PRIMARY KEY,
   name                          VARCHAR(200) UNIQUE NOT NULL,
   description                   TEXT,
+  start_at                      TIME NOT NULL,
+  end_at                        TIME NOT NULL
   images                        TEXT[] NOT NULL,
   videos                        TEXT[],
   includes                      VARCHAR(255)[],
@@ -82,9 +84,9 @@ CREATE TABLE guides(
   rating_count      INT default 0,
   rating            DECIMAL default 0,
   tokens            tsvector,
-  created_at        TIMESTAMPTZ DEFAULT now(),
   modified_date     TIMESTAMPTZ,
-  active            BOOLEAN DEFAULT true
+  active            BOOLEAN DEFAULT true,
+  created_at        TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX guides_tokens_idx ON guides USING gin(tokens);
@@ -108,8 +110,8 @@ CREATE TABLE customers(
   language_id       INT REFERENCES languages(id) NOT NULL,
   profile_picture   TEXT,
   tokens            tsvector,
-  created_at        TIMESTAMPTZ DEFAULT now(),
-  active            BOOLEAN DEFAULT true
+  active            BOOLEAN DEFAULT true,
+  created_at        TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX customer_tokens_idx ON customers USING gin(tokens);
@@ -145,8 +147,8 @@ CREATE TABLE purchases(
   pax               INT NOT NULL,
   discount          INT DEFAULT 0,
   refund            BOOLEAN DEFAULT false,
-  tour_date         TIMESTAMPTZ NOT NULL,
-  purchase_date     TIMESTAMPTZ DEFAULT now()
+  tour_date         DATE NOT NULL,
+  created_at        TIMESTAMPTZ DEFAULT now()
 );
 
 CREATE INDEX purchases_customer_id_idx ON purchases(customer_id);
@@ -162,7 +164,7 @@ CREATE TABLE guide_requests(
   language_id           INT REFERENCES languages(id) NOT NULL,
   active                BOOLEAN DEFAULT true,
   available             BOOLEAN DEFAULT true,
-  tour_request_date     TIMESTAMPTZ NOT NULL,
+  tour_request_date     DATE NOT NULL,
   created_at            TIMESTAMPTZ DEFAULT now()
 );
 
@@ -182,4 +184,13 @@ CREATE TABLE guide_request_details(
 
 CREATE INDEX guide_request_details_guide_request_id_idx ON guide_request_details(guide_request_id);
 CREATE INDEX guide_request_details_guide_id_idx ON guide_request_details(guide_id);
+
+-- CREATE TABLE busy_schedules
+CREATE TABLE busy_schedules(
+  guide_id              INT REFERENCES guides(id) NOT NULL,
+  busy_date             DATE NOT NULL,
+  created_at            TIMESTAMPTZ DEFAULT now()
+);
+
+CREATE INDEX busy_schedules_guide_id_idx ON busy_schedules(guide_id);
 
