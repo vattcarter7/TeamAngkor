@@ -147,9 +147,11 @@ CREATE TABLE purchases(
   pax               INT NOT NULL,
   discount          REAL DEFAULT 0,
   refund            BOOLEAN DEFAULT false,
-  tour_date         DATE NOT NULL,
+  tour_date         DATE check(tour_date >= now()) NOT NULL,
   created_at        TIMESTAMPTZ DEFAULT now()
 );
+
+ALTER TABLE purchases ADD CONSTRAINT purchases_unique_tour_date_guide UNIQUE (customer_id, tour_id, guide_id, tour_date);
 
 CREATE INDEX purchases_customer_id_idx ON purchases(customer_id);
 CREATE INDEX purchases_tour_id_idx ON purchases(tour_id);

@@ -25,7 +25,29 @@ exports.getPurchasesByGuide = asyncHandler(async (req, res, next) => {});
 // @desc      Create a purchase
 // @route     POST /api/v1/purchases
 // @access    Private/Admin
-exports.createPurchase = asyncHandler(async (req, res, next) => {});
+exports.createPurchase = asyncHandler(async (req, res, next) => {
+  const createQuery = `INSERT INTO purchases (customer_id, tour_id, guide_id, tour_type, unit_price, pax, tour_date)
+                          VALUES($1, $2, $3, $4, $5, $6, $7) returning *`;
+  const values = [
+    req.body.customerId,
+    req.body.tourId,
+    req.body.guideId,
+    req.body.tourType,
+    req.body.unitPrice,
+    req.body.pax,
+    req.body.tourDate
+  ];
+
+  const { rows } = await db.query(createQuery, values);
+
+  if (!rows[0])
+    return next(new ErrorResponse('Unable to make a purchase', 400));
+  const purchase = rows[0];
+  res.status(201).json({
+    success: true,
+    purchase
+  });
+});
 
 // @desc      Delete a purchase
 // @route     DELETE /api/v1/purchases
