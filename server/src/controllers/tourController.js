@@ -183,11 +183,12 @@ exports.updateTour = asyncHandler(async (req, res, next) => {
           private_19pax_unit_price = $30,
           start_at = $31,
           end_at = $32
+        WHERE id = $33
         returning *
       `;
 
   const updateValues = [
-    req.body.name || response.rows[0].name,
+    req.body.name ? req.body.name : response.rows[0].name,
     req.body.description || response.rows[0].description,
     req.body.images || response.rows[0].images,
     req.body.videos || response.rows[0].videos,
@@ -237,7 +238,8 @@ exports.updateTour = asyncHandler(async (req, res, next) => {
     req.body.private_19pax_unit_price ||
       response.rows[0].private_19pax_unit_price,
     req.body.start_at || response.rows[0].start_at,
-    req.body.end_at || response.rows[0].end_at
+    req.body.end_at || response.rows[0].end_at,
+    req.params.id
   ];
 
   const { rows } = await db.query(updateQuery, updateValues);

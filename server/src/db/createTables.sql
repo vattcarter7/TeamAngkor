@@ -22,7 +22,7 @@ CREATE INDEX users_tokens_idx ON users USING gin(tokens);
 -- CREATE TABLE tours
 CREATE TABLE tours(
   id                            SERIAL PRIMARY KEY,
-  name                          VARCHAR(200) UNIQUE NOT NULL,
+  name                          VARCHAR(200) NOT NULL,
   description                   TEXT,
   start_at                      TIME NOT NULL,
   end_at                        TIME check(end_at > start_at) NOT NULL,
