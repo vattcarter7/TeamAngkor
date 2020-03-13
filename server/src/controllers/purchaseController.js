@@ -20,7 +20,23 @@ exports.getPurchases = asyncHandler(async (req, res, next) => {
 // @desc      Get a purchase by single guide
 // @route     DELETE /api/v1/purchases/:guideId
 // @access    Private/Admin
-exports.getPurchasesByGuide = asyncHandler(async (req, res, next) => {});
+exports.getPurchasesByGuide = asyncHandler(async (req, res, next) => {
+  const textQuery = `SELECT purchases.* ,guides.* FROM purchases
+                     INNER JOIN guides 
+                     ON purchases.guide_id = guides.id
+                     WHERE guides.id = $1`;
+  const value = [req.params.guideId]
+  const { rows } = await db.query(textQuery, value);
+  if (!rows[0])
+    return next(new ErrorResponse('No purchases found for that guide', 404));
+  
+  const purchasesByGuide = rows;
+  res.status(200).json({
+    success: true,
+    results: purchasesByGuide.length,
+    purchasesByGuide
+  })
+});
 
 // @desc      Create a purchase
 // @route     POST /api/v1/purchases
