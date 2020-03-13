@@ -1,4 +1,4 @@
-const db = '../db';
+const db = require('../db');
 const ErrorResponse = require('../helpers/errorResponse');
 const asyncHandler = require('../middlewares/async');
 
@@ -18,7 +18,7 @@ exports.getPurchases = asyncHandler(async (req, res, next) => {
 });
 
 // @desc      Get a purchase by single guide
-// @route     DELETE /api/v1/purchases
+// @route     DELETE /api/v1/purchases/:guideId
 // @access    Private/Admin
 exports.getPurchasesByGuide = asyncHandler(async (req, res, next) => {});
 

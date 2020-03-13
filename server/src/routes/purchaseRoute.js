@@ -16,6 +16,6 @@ router
   .post(createPurchase)
   .delete(deletePurchase);
 
-router.route('/guides/:id').get(getPurchasesByGuide);
+router.route('/:guideId').get(getPurchasesByGuide);
 
 module.exports = router;

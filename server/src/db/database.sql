@@ -25,7 +25,7 @@ CREATE TABLE tours(
   name                          VARCHAR(200) UNIQUE NOT NULL,
   description                   TEXT,
   start_at                      TIME NOT NULL,
-  end_at                        TIME NOT NULL
+  end_at                        TIME check(end_at > start_at) NOT NULL,
   images                        TEXT[] NOT NULL,
   videos                        TEXT[],
   includes                      VARCHAR(255)[],
@@ -102,24 +102,24 @@ CREATE INDEX guide_photos_guide_id_idx ON guide_photos(guide_id);
 CREATE INDEX guide_photos_photo_id_idx ON guide_photos(photo_id);
 
 -- CREATE TABLE customers
-CREATE TABLE customers(
-  id                INT UNIQUE PRIMARY KEY NOT NULL,  -- id DERIVED FROM users id
-  country           VARCHAR(100) NOT NULL,
-  phone             VARCHAR(100) NOT NULL,
-  email             VARCHAR(100) NOT NULL, 
-  language_id       INT REFERENCES languages(id) NOT NULL,
-  profile_picture   TEXT,
-  tokens            tsvector,
-  active            BOOLEAN DEFAULT true,
-  created_at        TIMESTAMPTZ DEFAULT now()
-);
+-- CREATE TABLE customers(
+--   id                INT UNIQUE PRIMARY KEY NOT NULL,  -- id DERIVED FROM users id
+--   country           VARCHAR(100) NOT NULL,
+--   phone             VARCHAR(100) NOT NULL,
+--   email             VARCHAR(100) NOT NULL, 
+--   language_id       INT REFERENCES languages(id) NOT NULL,
+--   profile_picture   TEXT,
+--   tokens            tsvector,
+--   active            BOOLEAN DEFAULT true,
+--   created_at        TIMESTAMPTZ DEFAULT now()
+-- );
 
-CREATE INDEX customer_tokens_idx ON customers USING gin(tokens);
+-- CREATE INDEX customer_tokens_idx ON customers USING gin(tokens);
 
 -- CREATE TABLE reviews
 CREATE TABLE reviews(
   id                SERIAL PRIMARY KEY,
-  customer_id       INT REFERENCES customers(id) NOT NULL,
+  customer_id       INT REFERENCES users(id) NOT NULL,
   tour_id           INT REFERENCES tours(id) NOT NULL,
   guide_id          INT REFERENCES guides(id) NOT NULL,
   rating            INT check(rating >= 1 and rating <= 5) NOT NULL,
@@ -139,13 +139,13 @@ CREATE INDEX reviews_tokens_idx ON reviews USING gin(tokens);
 -- CREATE TABLE purchases
 CREATE TABLE purchases(
   id                SERIAL PRIMARY KEY,
-  customer_id       INT NOT NULL REFERENCES customers(id),
+  customer_id       INT NOT NULL REFERENCES users(id),
   tour_id           INT NOT NULL REFERENCES tours(id),
   guide_id          INT NOT NULL REFERENCES guides(id),
   tour_type         VARCHAR(100), -- join_tour, private_1pax_price, private_2pax_price, private_3pax_price ...
   unit_price        REAL NOT NULL,
   pax               INT NOT NULL,
-  discount          INT DEFAULT 0,
+  discount          REAL DEFAULT 0,
   refund            BOOLEAN DEFAULT false,
   tour_date         DATE NOT NULL,
   created_at        TIMESTAMPTZ DEFAULT now()
@@ -159,7 +159,7 @@ CREATE INDEX purchases_guide_id_idx ON purchases(guide_id);
 CREATE TABLE guide_requests(
   id                    SERIAL PRIMARY KEY,
   tour_id               INT REFERENCES tours(id) NOT NULL,
-  customer_id           INT REFERENCES customers(id) NOT NULL,
+  customer_id           INT REFERENCES users(id) NOT NULL,
   guide_id              INT REFERENCES guides(id) NOT NULL,
   language_id           INT REFERENCES languages(id) NOT NULL,
   active                BOOLEAN DEFAULT true,
