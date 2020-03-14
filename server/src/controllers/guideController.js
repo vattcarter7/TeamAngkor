@@ -37,9 +37,9 @@ exports.getGuide = asyncHandler(async (req, res, next) => {
 // @route     POST /api/v1/guides/:id
 // @access    Private/Admin
 exports.createGuide = asyncHandler(async (req, res, next) => {
-  const createQuery = `SELECT * FROM users WHERE id = $1`;
+  const textQuery = `SELECT * FROM users WHERE id = $1`;
   const value = [req.params.id];
-  const response = await db.query(createQuery, value);
+  const response = await db.query(textQuery, value);
   if (!response.rows[0])
     return next(
       new ErrorResponse('No user found. Unable to create guide', 404)

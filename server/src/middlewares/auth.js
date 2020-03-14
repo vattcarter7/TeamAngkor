@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const {promisify} = require('util')
+const { promisify } = require('util');
 const db = require('../db');
 const asyncHandler = require('../middlewares/async');
 const ErrorResponse = require('../helpers/errorResponse');
@@ -29,7 +29,9 @@ exports.protect = asyncHandler(async (req, res, next) => {
     const queryText = 'SELECT * FROM users WHERE id = $1';
     const { rows } = await db.query(queryText, [decoded.userId]);
     if (!rows[0]) {
-      return next(new ErrorResponse('Not authorized to access this route', 403));
+      return next(
+        new ErrorResponse('Not authorized to access this route', 403)
+      );
     }
 
     // GRAND ACCESS TO PROTECTED ROUTE
@@ -44,7 +46,7 @@ exports.protect = asyncHandler(async (req, res, next) => {
     res.locals.user = req.user;
     next();
   } catch (err) {
-    return next(new ErrorResponse('Not authorized to access this route', 403))
+    return next(new ErrorResponse('Not authorized to access this route', 403));
   }
 });
 
@@ -54,7 +56,7 @@ exports.authorize = (...roles) => {
     if (!roles.includes(req.user.user_role)) {
       return next(
         new ErrorResponse(
-          `User role ${req.params.user_role} is not authorized to this route`,
+          `User role ${req.user.user_role} is not authorized to this route`,
           403
         )
       );
@@ -62,3 +64,4 @@ exports.authorize = (...roles) => {
     next();
   };
 };
+

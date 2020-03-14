@@ -130,6 +130,8 @@ CREATE TABLE reviews(
   created_at        TIMESTAMPTZ DEFAULT now()
 );
 
+ALTER TABLE reviews ADD CONSTRAINT review_unique UNIQUE (customer_id, tour_id, guide_id);
+
 CREATE INDEX reviews_customer_id_idx ON reviews(customer_id);
 CREATE INDEX reviews_tour_id_idx ON reviews(tour_id);
 CREATE INDEX reviews_guide_id_idx ON reviews(guide_id);

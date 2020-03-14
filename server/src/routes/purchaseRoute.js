@@ -9,12 +9,12 @@ const {
 
 const router = express.Router();
 
-const { protect } = require('../middlewares/auth');
+const { protect, authorize  } = require('../middlewares/auth');
 
 router
   .route('/')
   .get(getPurchases)
-  .post(createPurchase);
+  .post(protect, authorize('user') , createPurchase);
 
 router
   .route('/:id')

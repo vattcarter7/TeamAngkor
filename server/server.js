@@ -20,6 +20,7 @@ const tours = require('./src/routes/tourRoute');
 const guides = require('./src/routes/guideRoute');
 const schedules = require('./src/routes/scheduleRoute');
 const purchases = require('./src/routes/purchaseRoute');
+const reviews = require('./src/routes/reviewRoute');
 
 // Body parser
 app.use(express.json());
@@ -50,6 +51,7 @@ app.use('/api/v1/tours', tours);
 app.use('/api/v1/guides', guides);
 app.use('/api/v1/schedules', schedules);
 app.use('/api/v1/purchases', purchases);
+app.use('/api/v1/reviews', reviews);
 
 app.use(errorHandler);
 
