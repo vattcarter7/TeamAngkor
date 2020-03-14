@@ -4,17 +4,20 @@ const {
   createPurchase,
   deletePurchase,
   getPurchasesByGuide,
-  refundPurchase
+  refundPurchase,
+  replaceGuideOnPurchase
 } = require('../controllers/purchaseController');
 
 const router = express.Router();
 
-const { protect, authorize  } = require('../middlewares/auth');
+const { protect, authorize } = require('../middlewares/auth');
 
 router
   .route('/')
   .get(getPurchases)
-  .post(protect, authorize('user') , createPurchase);
+  .post(protect, authorize('user'), createPurchase);
+
+router.route('/:id/guide').put(replaceGuideOnPurchase);
 
 router
   .route('/:id')

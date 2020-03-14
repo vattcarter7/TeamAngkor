@@ -110,5 +110,34 @@ exports.refundPurchase = asyncHandler(async (req, res, next) => {
     success: true,
     msg: 'refund successful',
     refundPurchase
+  });
+});
+
+exports.replaceGuideOnPurchase = asyncHandler(async (req, res, next) => {
+  const textQuery = `SELECT * FROM purchases WHERE id = $1 AND refund = $2`;
+  const params = [req.params.id, false];
+
+  const response = await db.query(textQuery, params);
+  if (!response.rows[0])
+    return next(
+      new ErrorResponse('No such purchase to replace another guide', 404)
+    );
+
+  const updateQuery = `UPDATE purchases SET guide_id = $1 WHERE id = $2 returning *`;
+  const updateValues = [req.body.guideId, response.rows[0].id];
+
+  if (response.rows[0].guide_id === req.body.guideId) {
+    return next(new ErrorResponse('Please change to different guide Id', 403));
+  }
+
+  const { rows } = await db.query(updateQuery, updateValues);
+  if (!rows[0])
+    return next(new ErrorResponse('Unable to replace another guide', 400));
+  
+  const guide = rows[0];
+
+  res.status(201).json({
+    success: true,
+    guide
   })
 });
