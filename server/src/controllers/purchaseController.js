@@ -113,6 +113,9 @@ exports.refundPurchase = asyncHandler(async (req, res, next) => {
   });
 });
 
+// @desc      Replace to another guide on the purchase
+// @route     PUT /api/v1/purchases/:id/guide
+// @access    Private/Admin
 exports.replaceGuideOnPurchase = asyncHandler(async (req, res, next) => {
   const textQuery = `SELECT * FROM purchases WHERE id = $1 AND refund = $2`;
   const params = [req.params.id, false];
