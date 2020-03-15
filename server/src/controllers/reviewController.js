@@ -20,7 +20,7 @@ exports.getAllReviews = asyncHandler(async (req, res, next) => {
 // @desc      Get all published reviews
 // @route     GET /api/v1/reviews/published
 // @access    Private/Admin
-exports.getPublishedReviews = asyncHandler(async(req, res, next) => {
+exports.getPublishedReviews = asyncHandler(async (req, res, next) => {
   const textQuery = `SELECT * FROM reviews WHERE published = $1`;
   const value = [true];
   const { rows } = await db.query(textQuery, value);
@@ -33,8 +33,8 @@ exports.getPublishedReviews = asyncHandler(async(req, res, next) => {
     success: true,
     results: publishedReviews.length,
     publishedReviews
-  })
-})
+  });
+});
 
 // @desc      Get all unpublished reviews
 // @route     GET /api/v1/reviews/unpublished
@@ -52,7 +52,7 @@ exports.getUnpublishedReviews = asyncHandler(async (req, res, next) => {
     success: true,
     results: unpublishedReviews.length,
     unpublishedReviews
-  })
+  });
 });
 
 // @desc      Get single review
