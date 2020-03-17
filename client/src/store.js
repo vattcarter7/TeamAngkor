@@ -30,3 +30,5 @@ store.subscribe(() => {
     setAuthToken(token);
   }
 })
+
+export default store;
