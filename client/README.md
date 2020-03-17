@@ -1,3 +1,1 @@
-## Team Angkor Project - Front End
-
-> Develop with react
+#### TEAM ANGKOR PROJECT FRONTEND WITH REACTJS
