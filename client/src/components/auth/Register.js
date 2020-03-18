@@ -4,7 +4,7 @@ import { Link, Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 
 const Register = props => {
-  return <div></div>;
+  return <div>Register</div>;
 };
 
 Register.propTypes = {};
