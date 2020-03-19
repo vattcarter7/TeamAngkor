@@ -47,7 +47,6 @@ exports.register = asyncHandler(async (req, res, next) => {
   if (
     !req.body.firstname ||
     !req.body.lastname ||
-    !req.body.gender ||
     !req.body.email ||
     !req.body.password
   ) {
@@ -78,14 +77,13 @@ exports.register = asyncHandler(async (req, res, next) => {
   }
 
   const createQuery = `INSERT INTO
-      users(firstname,lastname, email, password, gender, created_at, tokens)
-      VALUES($1, $2, $3, $4, $5, to_timestamp($6), to_tsvector($7)) returning *`;
+      users(firstname,lastname, email, password, created_at, tokens)
+      VALUES($1, $2, $3, $4, to_timestamp($5), to_tsvector($6)) returning *`;
   const params = [
     req.body.firstname.trim().toLowerCase(),
     req.body.lastname.trim().toLowerCase(),
     req.body.email.trim().toLowerCase(),
     hashedPassword,
-    req.body.gender,
     covertJavascriptToPosgresTimestamp(Date.now()),
     req.body.firstname.trim().toLowerCase() +
       ' ' +

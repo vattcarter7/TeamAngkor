@@ -29,6 +29,7 @@ const Login = ({ login, isAuthenticated, loading }) => {
     <Spinner />
   ) : (
     <Fragment>
+    <div className='login'>
       <h1 className="large text-primary my-3">Sign In</h1>
       <p className="lead">
         <i className="fas fa-user" /> Sign Into Your Account
@@ -57,6 +58,7 @@ const Login = ({ login, isAuthenticated, loading }) => {
       <p className="my-1">
         Don't have an account? <Link to="/register">Sign Up</Link>
       </p>
+      </div>
     </Fragment>
   );
 };

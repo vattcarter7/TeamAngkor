@@ -288,6 +288,12 @@ button {
   color: #0077b5;
 }
 
+.login,
+.register {
+  width: 40%;
+  margin: 6em auto;
+}
+
 .table th,
 .table td {
   padding: 1rem;
@@ -530,6 +536,11 @@ button {
     display: none;
   }
 
+  .login,
+  .register {
+    width: 85%;
+    margin: 7em auto;
+  }
   /* Profiles Page */
   .profile {
     grid-template-columns: 1fr;

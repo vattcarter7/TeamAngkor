@@ -6,7 +6,9 @@ import {
   AUTH_ERROR,
   LOGIN_SUCCESS,
   LOGIN_FAIL,
-  LOGOUT
+  LOGOUT,
+  REGISTER_SUCCESS,
+  REGISTER_FAIL
 } from './types';
 
 // Load user
@@ -50,14 +52,40 @@ export const login = (email, password) => async dispatch => {
   }
 };
 
+// Register
+export const register = ({
+  firstname,
+  lastname,
+  email,
+  password
+}) => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  };
+
+  const body = JSON.stringify({ firstname, lastname, email, password });
+
+  try {
+    const res = await axios.post('/api/v1/auth/register', body, config);
+    dispatch({
+      type: REGISTER_SUCCESS,
+      payload: res.data
+    });
+  } catch (err) {
+    //TODO set error from the server to reducers
+
+    dispatch({ type: REGISTER_FAIL });
+  }
+};
+
 // Logout
 export const logout = () => async dispatch => {
   try {
     await axios.get('/api/v1/auth/logout');
     dispatch({ type: LOGOUT });
   } catch (err) {
-    dispatch({
-      type: AUTH_ERROR
-    });
+    console.log('Unable to logout');
   }
 };
