@@ -14,7 +14,9 @@ import {
 // Load user
 export const loadUser = () => async dispatch => {
   try {
-    const res = await axios.get('/api/v1/auth/me');
+    // const res = await axios.get('/api/v1/auth/me');
+    const res = await axios.get('/api/v1/auth/loggedin');
+
     dispatch({
       type: USER_LOADED,
       payload: res.data

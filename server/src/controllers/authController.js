@@ -1,4 +1,6 @@
 const crypto = require('crypto');
+const jwt = require('jsonwebtoken')
+const { promisify } = require('util');
 const db = require('../db');
 const {
   isValidEmail,
@@ -71,9 +73,7 @@ exports.register = asyncHandler(async (req, res, next) => {
   const response = await db.query(textQuery, value);
 
   if (response.rows[0]) {
-    return next(
-      new ErrorResponse(`Unable to register.`, 403)
-    );
+    return next(new ErrorResponse(`Unable to register.`, 403));
   }
 
   const createQuery = `INSERT INTO
@@ -158,6 +158,48 @@ exports.getMe = asyncHandler(async (req, res, next) => {
     success: true,
     user
   });
+});
+
+// @desc      GET my profile if logged in
+// @route     GET /api/v1/auth/loggedin
+// @access    public
+exports.isLoggedIn = asyncHandler(async (req, res, next) => {
+  let token;
+
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith('Bearer')
+  ) {
+    // Set token from Bearer token in header
+    token = req.headers.authorization.split(' ')[1];
+  } else if (req.cookies.auth_jwt && req.cookies.auth_jwt !== 'loggedout') {
+    // Set token from cookie
+    token = req.cookies.auth_jwt;
+  }
+
+  if (!token) {
+    return next(new ErrorResponse('Not authorized to access this route', 403));
+  }
+
+  try {
+    // verify token
+    const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+    const queryText = 'SELECT * FROM users WHERE id = $1';
+    const { rows } = await db.query(queryText, [decoded.userId]);
+    if (!rows[0]) {
+      return next(
+        new ErrorResponse('Not authorized to access this route', 403)
+      );
+    }
+    const user = rows[0]
+    res.status(200).json({
+      success: true,
+      token,
+      user
+    })
+  } catch (err) {
+    return next(new ErrorResponse('Not authorized to access this route', 403));
+  }
 });
 
 // @desc      Update user datails
