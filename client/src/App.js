@@ -26,14 +26,15 @@ const App = () => {
       <Router>
         <Fragment>
           <Navbar />
-
           <Switch>
-            <Route exact path="/" component={Landing} />
-            <Container className="main">
-              <Route exact path="/register" component={Register} />
-              <Route exact path="/login" component={Login} />
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
-            </Container>
+            <Fragment>
+              <Route exact path="/" component={Landing} />
+              <Container>
+                <Route exact path="/register" component={Register} />
+                <Route exact path="/login" component={Login} />
+                <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              </Container>
+            </Fragment>
           </Switch>
         </Fragment>
       </Router>

@@ -17,7 +17,7 @@ import {
 const validate = combineValidators({
   email: composeValidators(
     isRequired({ message: 'Email is required' }),
-    matchesPattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)({
+    matchesPattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)({
       message: 'Please enter a valid email'
     })
   )(),
@@ -71,7 +71,6 @@ const Login = ({
             fluid
             size="large"
             color="teal"
-            Loading={submitting}
           >
             Login
           </Button>

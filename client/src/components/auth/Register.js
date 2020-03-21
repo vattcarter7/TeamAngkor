@@ -20,7 +20,7 @@ const validate = combineValidators({
   lastname: isRequired({ message: 'Last Name is required' }),
   email: composeValidators(
     isRequired({ message: 'Email is required' }),
-    matchesPattern(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/)({
+    matchesPattern(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)({
       message: 'Please enter a valid email'
     })
   )(),
@@ -95,7 +95,6 @@ const Register = ({
             fluid
             size="large"
             color="teal"
-            Loading={submitting}
           >
             Register
           </Button>
