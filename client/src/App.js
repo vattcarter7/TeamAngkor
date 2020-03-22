@@ -7,6 +7,7 @@ import Login from './components/auth/Login';
 import Register from './components/auth/Register';
 import Dashboard from './components/dashboard/Dashboard';
 import PrivateRoute from './components/routing/PrivateRoute';
+import SingleTourFixedSidebar from './components/Test/SingleTourFixedSidebar'
 //import Routes from './components/routing/Routes';
 
 // Redux
@@ -14,7 +15,7 @@ import { Provider } from 'react-redux';
 import store from './store';
 import { loadUser } from './actions/auth';
 
-import './App.css';
+//import './App.css';
 
 const App = () => {
   useEffect(() => {
@@ -25,10 +26,9 @@ const App = () => {
     <Provider store={store}>
       <Router>
         <Fragment>
-          <Navbar />
           <Switch>
             <Fragment>
-              <Route exact path="/" component={Landing} />
+              <Route exact path="/testsingle" component={SingleTourFixedSidebar} />
               <Container>
                 <Route exact path="/register" component={Register} />
                 <Route exact path="/login" component={Login} />
