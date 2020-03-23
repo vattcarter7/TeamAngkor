@@ -86,7 +86,7 @@ h1, h2, h3 {margin-top: 20px;margin-bottom: 10px;}
 
 h2 span, h3 span, h4 span, h5 span, h6 span{color:#e04f67;}
 
-.box_style_1 h3.inner{ 
+.box_style_1 h4.inner{ 
 	margin:-30px -30px 20px -30px; 
 	background-color:#565a5c; 
 	padding:10px 20px 10px 18px;

@@ -529,8 +529,8 @@ const SingleTourFixedSidebar = () => {
 
               <div className="row">
                 <div className="col-lg-3">
-                  <h3>Reviews </h3>
-                  <a href="#" className="btn_1 add_bottom_30" data-toggle="modal" data-target="#myReview">Leave a review</a>
+                  <h6>Recommended Guide </h6>
+                  <a href="#" className="btn_1 add_bottom_30" data-toggle="modal" data-target="#myReview">Change guide</a>
                 </div>
                 <div className="col-lg-9">
                   <div id="general_rating">11 Reviews
@@ -614,7 +614,7 @@ const SingleTourFixedSidebar = () => {
             <aside className="col-lg-4" id="sidebar" style={{zIndex:999}}>
               <div className="theiaStickySidebar sticky-top">
                 <div className="box_style_1 expose" id="booking_box">
-                  <h3 className="inner">- Booking -</h3>
+                  <h4 className="inner">- Booking Summary -</h4>
                   <div className="row">
                     <div className="col-sm-6">
                       <div className="form-group">
