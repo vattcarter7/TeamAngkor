@@ -529,7 +529,7 @@ const SingleTourFixedSidebar = () => {
 
               <div className="row">
                 <div className="col-lg-3">
-                  <h6>Recommended Guide </h6>
+                  <h6>Recommended Guide [English] </h6>
                   <a href="#" className="btn_1 add_bottom_30" data-toggle="modal" data-target="#myReview">Change guide</a>
                 </div>
                 <div className="col-lg-9">
