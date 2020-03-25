@@ -7877,3 +7877,24 @@ only screen and (min-device-pixel-ratio: 2) and (max-width: 991px) {
 	background-position: right .7em top 50%, 0 0;
 	background-size: .65em auto, 100%;
 }
+
+#change-guide {
+	display: flex;
+	justify-content: space-evenly;
+}
+
+#guide-photo{
+	width: 100%;
+}
+
+
+.fa-star {
+	color: #facc02;
+	font-size: 23px;
+}
+
+.fa-star-o {
+	color: #facc02;
+	font-size: 23px;
+}
+

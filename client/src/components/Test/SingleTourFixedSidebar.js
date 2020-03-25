@@ -1,9 +1,13 @@
 import React, { Fragment } from 'react';
+import Rating from 'react-rating';
+import StarRatings from 'react-star-ratings';
+
 import LogoSticky from './LogoSticky';
 import ThumbCart1 from './ThumbCart1';
 import ThumbCart2 from './ThumbCart2';
 
 const SingleTourFixedSidebar = () => {
+  const changeRating = () => {};
   return (
     <Fragment>
       <header>
@@ -908,112 +912,67 @@ const SingleTourFixedSidebar = () => {
 
               <div className="row">
                 <div className="col-lg-3">
-                  <h6>Recommended Guide [English] </h6>
-                  <a
-                    href="#"
-                    className="btn_1 add_bottom_30"
-                    data-toggle="modal"
-                    data-target="#myReview"
-                  >
-                    Change guide
-                  </a>
+                  <div id="guide-photo">
+                    <ThumbCart1 />
+                  </div>
+                  <p>Mark Daniel</p>
                 </div>
                 <div className="col-lg-9">
+                  <h5>Recommonded by TeamAngkor</h5>
+                  <h6>
+                    <strong>Mr. Mark Daniel</strong>
+                  </h6>
                   <div id="general_rating">
-                    11 Reviews
-                    <div className="rating">
-                      <i className="icon-smile voted"></i>
-                      <i className="icon-smile voted"></i>
-                      <i className="icon-smile voted"></i>
-                      <i className="icon-smile"></i>
-                      <i className="icon-smile"></i>
+                    <div>
+                      <Rating
+                        emptySymbol="fa fa-star-o fa-2x"
+                        fullSymbol="fa fa-star fa-2x"
+                        initialRating={4.5}
+                        fractions={4}
+                      />
+                      <span> 4.5 (11 Reviews)</span>
                     </div>
                   </div>
 
                   <div id="change-guide">
-                    Change Guide
+                    <div id="change-guide-form">
+                      Change Guide
+                      <span>
+                        <i className="icon-down-open-mini"></i>
+                      </span>
+                      <div id="change-guide-sub-menu">
+                        <ul className="guide-select-list">
+                          <li>
+                            <a href="#!">Suh David</a>
+                          </li>
+                          <li>
+                            <a href="#!">Luke Cav</a>
+                          </li>
+                          <li>
+                            <a href="#!">Sarah</a>
+                          </li>
+                          <li>
+                            <a href="#!">View other guides</a>
+                          </li>
+                          <li>
+                            <a href="#!">Let TeamAngkor Arrange Your Guide</a>
+                          </li>
+                        </ul>
+                      </div>
+                    </div>
+
+                    <span>Choose other language</span>
                     <span>
-                      <i className="icon-down-open-mini"></i>
-                    </span>
-                    <span>
-                      <select
-                        class="guide-select-form"
-                      >
-                        <option defaultValue='ENG'>ENG</option>
+                      <select class="guide-select-form">
+                        <option defaultValue="ENG">ENG</option>
                         <option>CAM</option>
                         <option>KOR</option>
                         <option>JAP</option>
                         <option>FRA</option>
                       </select>
                     </span>
-                    <div id="change-guide-sub-menu">
-                      <ul className="guide-select-list">
-                        <li>
-                          <a href="#!">Suh David</a>
-                        </li>
-                        <li>
-                          <a href="#!">Luke Cav</a>
-                        </li>
-                        <li>
-                          <a href="#!">Sarah</a>
-                        </li>
-                        <li>
-                          <a href="#!">View other guides</a>
-                        </li>
-                      </ul>
-                    </div>
                   </div>
 
-                  <div className="row" id="rating_summary">
-                    <div className="col-md-6">
-                      <ul>
-                        <li>
-                          Position
-                          <div className="rating">
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile"></i>
-                            <i className="icon-smile"></i>
-                          </div>
-                        </li>
-                        <li>
-                          Tourist guide
-                          <div className="rating">
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile"></i>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                    <div className="col-md-6">
-                      <ul>
-                        <li>
-                          Price
-                          <div className="rating">
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile"></i>
-                            <i className="icon-smile"></i>
-                          </div>
-                        </li>
-                        <li>
-                          Quality
-                          <div className="rating">
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                            <i className="icon-smile voted"></i>
-                          </div>
-                        </li>
-                      </ul>
-                    </div>
-                  </div>
                   <hr />
                   <div className="review_strip_single">
                     <img
